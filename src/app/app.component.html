@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Opinión</title>
+  <style>
+    .top-bar {
+      display: flex;
+      justify-content: flex-end;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 10px 20px;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      border-bottom: 2px solid #ccc;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .menu-link {
+      color: #2c3e50;
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0 20px;
+      text-decoration: none;
+      transition: color 0.3s ease, transform 0.3s ease;
+      padding: 10px 0;
+      text-align: center;
+    }
+
+    .menu-link:hover {
+      color: #f39c12;
+      transform: scale(1.2);
+    }
+
+    .submenu {
+      position: relative;
+      margin-top: 10px;
+    }
+
+    .submenu-items {
+      display: none;
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 5px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      top: 35px;
+      left: 0;
+      width: 200px;
+      padding: 5px 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .submenu-items a {
+      display: block;
+      padding: 12px 20px;
+      color: #2c3e50;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .submenu-items a:hover {
+      background-color: #f1f1f1;
+    }
+
+    .submenu:hover .submenu-items {
+      display: block;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    body {
+      padding-top: 60px;
+      /* Para evitar que el menú cubra el contenido */
+    }
+
+    .container {
+      margin: 80px 20px 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="top-bar">
+    <a href="#" class="menu-link" title="Inicio">Inicio</a>
+    <div class="submenu">
+      <a href="#" class="menu-link" title="Ejercicios">Ejercicios</a>
+      <div class="submenu-items">
+        <a href="URL_SUBMENU_EJERCICIO1">Fundamentos</a>
+        <a href="URL_SUBMENU_EJERCICIO2">Ejemplo 2</a>
+        <a href="URL_SUBMENU_EJERCICIO2">Ejemplo 3</a>
+        <a href="URL_SUBMENU_EJERCICIO2">Ejemplo 4</a>
+      </div>
+    </div>
+    <a href="#" class="menu-link" title="Evaluación">Evaluación</a>
+  </div>
+
+  <div class="container">
+    <h1>Ejemplo de formularios reactivos</h1>
+    <h3>Opinión del Cliente</h3>
+
+    <div class="col-sm-4">
+      <form [formGroup]="formOpinion" (ngSubmit)="onSubmit()">
+        <p>
+          Nombre: <input type="text" class="form-control" formControlName="nombre" />
+          @if (enviado && formOpinion.get('nombre')?.errors?.['required']) {
+          <span style="color: red;">Este campo es obligatorio </span>
+          }
+          @if (enviado && formOpinion.get('nombre')?.errors?.['minlength']) {
+          <span style="color: red;">El nombre debe tener al menos 10 caracteres </span>
+          }
+        </p>
+        <p>
+          E-mail: <input type="text" class="form-control" formControlName="email" />
+          @if (enviado && formOpinion.get('email')?.errors?.['required']) {
+          <span style="color: red;">Este campo es obligatorio </span>
+          }
+          @if (enviado && formOpinion.get('email')?.errors?.['email']) {
+          <span style="color: red;">El email proporcionado no es válido </span>
+          }
+        </p>
+        <p>
+          Es cliente registrado?:
+          <input type="radio" formControlName="status" value="Si" /> Sí
+          <input type="radio" formControlName="status" value="No" /> No
+
+          @if (enviado && formOpinion.get('status')?.errors?.['required']) {
+          <span style="color: red;">Este campo es obligatorio </span>
+          }
+        </p>
+        <p>
+          Municipio: <select class="form-control" formControlName="municipio">
+            <option value="Amealco">Amealco</option>
+            <option value="San Juan del Rio">San Juan del Rio</option>
+            <option value="Tequisquiapan">Tequisquiapan</option>
+          </select>
+          @if (enviado && formOpinion.get('municipio')?.errors?.['required']) {
+          <span style="color: red;">Este campo es obligatorio </span>
+          }
+        </p>
+        <p>
+          Opinión: <br />
+          <textarea class="form-control" rows="10" cols="70" formControlName="opinion"></textarea>
+          @if (enviado && formOpinion.get('opinion')?.errors?.['required']) {
+          <span style="color: red;">Este campo es obligatorio </span>
+          }
+          @if (enviado && formOpinion.get('opinion')?.errors?.['minlength']) {
+          <span style="color: red;">La opinión debe tener al menos 500 caracteres </span>
+          }
+        </p>
+        <p>
+          <input type="checkbox" formControlName="autorizacion" /> Desea Autorizar sus datos personales?
+          @if (enviado && formOpinion.get('autorizacion')?.errors?.['required']) {
+          <span style="color: red;">Este campo es obligatorio </span>
+          }
+        </p>
+        <button class="btn btn-primary" type="submit">Enviar</button>
+      </form>
+
+      <div>
+        @if (nombreCliente!= '' && emailCliente!='' && statusCliente!='' && municipioCliente!='' && opinionCliente!='' )
+        {
+        <strong>Datos enviados:</strong> <br />
+        Nombre: {{nombreCliente}} <br />
+        E-mail: {{emailCliente}} <br />
+        Cliente registrado: {{statusCliente}} <br />
+        Municipio: {{municipioCliente}} <br />
+
+        @if (autorizacionCliente) {
+        El cliente autoriza compartir sus datos personales
+        }@else {
+        El cliente <strong>NO AUTORIZA</strong> compartir sus datos personales
+        }
+        Opinión: {{opinionCliente}}
+        }
+      </div>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+
+</body>
+
+</html>
